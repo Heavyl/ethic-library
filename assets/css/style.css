@@ -1,0 +1,6 @@
+@import url('animations.css') layer(animations);
+
+
+.trigger{
+    cursor: pointer;
+}

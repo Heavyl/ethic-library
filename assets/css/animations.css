@@ -1,0 +1,15 @@
+.slide-left{
+    --value: -100vw
+    --from : slide;
+    background-color: blue!important;
+    animation: var(--animation) 1s infinite;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(-100vw);
+    }
+    100% {
+        transform: translateX(100vw);
+    }
+}
