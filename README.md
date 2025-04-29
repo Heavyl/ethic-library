@@ -1,0 +1,2 @@
+# ethic-library
+EthicLibrary plugin
