@@ -8,7 +8,7 @@ export default class Interactive {
         targets = '.target',
         onScroll,
         onClick,
-        onBreakpoint
+        onBecomeVisible
     }) {
         this.container = container;
         this._containerElement = document.querySelector(container);
@@ -30,8 +30,7 @@ export default class Interactive {
         this._callback = callback;
         this._onScroll = onScroll;
         this._onClick = onClick;
-        this._onBreakpoint = onBreakpoint;
-
+        this._onBecomeVisible = onBecomeVisible;
     }
 
 
@@ -115,7 +114,7 @@ export default class Interactive {
      * @returns {void}
      */
     handleOnScroll() {
-        const { direction, threshold, absolute } = this._onScroll || {};
+        const { direction = 'down', threshold, absolute } = this._onScroll || {};
         if (!['up', 'down'].includes(direction)) {
             console.error('Invalid onScroll: Use "up" or "down"');
             return;
@@ -157,7 +156,7 @@ export default class Interactive {
      * @returns {void}
      */
     handleBreakpoint() {
-        const { from, threshold } = this._onBreakpoint || {};
+        const { from = 'top', threshold } = this._onBecomeVisible || {};
 
         if ( from && !['top', 'bottom'].includes(from)) {
             console.error('Invalid "from" value. Use "top" or "bottom"');
@@ -182,12 +181,12 @@ export default class Interactive {
      */
     hasReachedBounding() {
         const bounding = this._containerElement.getBoundingClientRect();
-        const ratio = (window.innerHeight / 100) * this._onBreakpoint.threshold;
+        const ratio = (window.innerHeight / 100) * this._onBecomeVisible.threshold;
 
         const distanceFromBottom = window.innerHeight - ratio;
         const distanceFromTop = ratio;
 
-        return this._onBreakpoint.from === 'top'
+        return this._onBecomeVisible.from === 'top'
             ? distanceFromTop >= bounding.top
             : distanceFromBottom >= bounding.bottom;
     }
@@ -206,31 +205,4 @@ export default class Interactive {
         return nodeList;
     }
 
-    /**
-     * Handle click events for activating/deactivating elements.
-     * @returns {void}
-     */
-    handleOnClick() {
-        this._containerElement.addEventListener('click', e => {
-            const currentTrigger = e.target.closest(this.triggers);
-
-            if (currentTrigger) {
-                const data = currentTrigger.dataset[this._dataAttribute];
-                if (!data) {
-                    console.error(`Invalid data attribute for trigger:`, currentTrigger);
-                    return;
-                }
-
-                const targetElements = this.getNodeListFrom(`${this.container} .${data}`);
-                const triggerElements = Array.from(this._triggers).filter(
-                    trigger => trigger.dataset[this._dataAttribute] === data
-                );
-
-                this.deactivate(this._activeClass, this._triggers, this._targets);
-                this.activate(this._activeClass, triggerElements, targetElements);
-
-                this.handleCallback();
-            }
-        });
-    }
 }

@@ -1,8 +1,8 @@
 import Interactive from "./Interactive.js";
 
 export default class Menu extends Interactive{
-    constructor({ container, button , menu , activeClass = 'show', callback, hideOnScroll = false, onScrollDown, onClick, onBreakpoint }){
-        super({container, activeClass, callback, onClick, onBreakpoint})
+    constructor({ container, button , menu , activeClass = 'show', callback, hideOnScroll = false, onScrollDown, onClick, onBecomeVisible }){
+        super({container, activeClass, callback, onClick, onBecomeVisible})
                
         if(menu && button){ 
             this._button = document.querySelector(container + ' ' + button);
@@ -29,7 +29,7 @@ export default class Menu extends Interactive{
     initEvents() {
         if (this._hideOnScroll || this._onScrollDown) this.handleScrollEvent();
         if (this._onClick) this.handleOnClick();
-        if (this._onBreakpoint) this.handleBreakpoint();
+        if (this._onBecomeVisible) this.handleBreakpoint();
     }
 
     /**

@@ -10,11 +10,13 @@ export default class Interaction extends Interactive {
         targets,
         onScroll,
         onClick,
-        onBreakpoint
+        onBecomeVisible
     }) {
-        super({ container, attribute, activeClass, callback, triggers, targets, onScroll, onClick, onBreakpoint });
+        super({ container, attribute, activeClass, callback, triggers, targets, onScroll, onClick, onBecomeVisible });
 
-        this._onClick = onClick;
+        this._onClick = onClick || {
+            type: 'default',
+        };
         this.initEvents();
     }
 
@@ -25,7 +27,7 @@ export default class Interaction extends Interactive {
     initEvents() {
         if (this._onScroll) this.handleOnScroll();
         if (this._onClick) this.handleOnClick();
-        if (this._onBreakpoint) this.handleBreakpoint();
+        if (this._onBecomeVisible) this.handleBreakpoint();
     }
 
     /**
@@ -75,20 +77,20 @@ export default class Interaction extends Interactive {
     handleInteractionType(currentTrigger, lastTrigger, targetElements, triggerElements) {
         switch (this._onClick.type) {
             case 'default':
-                this.deactivate(this._triggers, this._targets);
-                this.activate(targetElements, triggerElements);
+                this.deactivate(this._activeClass, this._triggers, this._targets);
+                this.activate(this._activeClass, targetElements, triggerElements);
                 break;
 
             case 'keep':
-                this.toggleElements(targetElements, triggerElements);
+                this.toggleElements(this._activeClass, targetElements, triggerElements);
                 break;
 
             case 'toggle':
                 if (lastTrigger === currentTrigger) {
-                    this.toggleElements(targetElements, triggerElements);
+                    this.toggleElements(this._activeClass, targetElements, triggerElements);
                 } else {
-                    this.deactivate(this._triggers, this._targets);
-                    this.activate(targetElements, triggerElements);
+                    this.deactivate(this._activeClass, this._triggers, this._targets);
+                    this.activate(this._activeClass, targetElements, triggerElements);
                 }
                 break;
 
